@@ -4,18 +4,25 @@
   become: true
   pre_tasks:
 
-  - name: install updates (CentOS and Ubuntu)
-    tags: always
-    package:
+  - name: install updates (CentOS)
+    yum:
+      update_only: yes
       update_cache: yes
-    changed_when: false
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (Ubuntu)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
 
 
+  - name: Install epel-release for CentOS
+    yum:
+      name:
+        - epel-release
+    when: ansible_distribution == "CentOS"
 
-- hosts: all
-  become: true
-  roles:
-    - base
 
 - hosts: CentOS_server
   become: true

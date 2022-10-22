@@ -1,8 +1,3 @@
----
-
-- hosts: all
-  become: true
-  pre_tasks:
 
   - name: Creating Destination Directory for Prometheus
     file:
