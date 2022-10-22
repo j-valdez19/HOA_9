@@ -1,0 +1,62 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (CentOS)
+    tags: always
+    yum:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: workstations
+  become: true
+  tasks:
+
+  - name: install apache and php for Ubuntu
+    tags: apache, apache2, ubuntu
+    apt:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install apache and php for CentOS
+    tags: apache, centos, httpd
+    dnf:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+
+
+  - name: Restart apache2 (Ubuntu)
+    tags: apache, ubuntu, apache2
+    service:
+      name: apache2
+      state: restarted
+      enabled: true
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Restart httpd (CentOS)
+    tags: apache, centos, httpd
+    service:
+      name: httpd
+      state: restarted
+      enabled: true
+    when: ansible_distribution == "CentOS"
+

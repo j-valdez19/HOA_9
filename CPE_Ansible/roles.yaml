@@ -1,0 +1,28 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (CentOS and Ubuntu)
+    tags: always
+    package:
+      update_cache: yes
+    changed_when: false
+
+
+
+- hosts: all
+  become: true
+  roles:
+    - base
+
+- hosts: CentOS_server
+  become: true
+  roles:
+    - CentOS_server
+
+- hosts: Ubuntu_server
+  become: true
+  roles:
+    - Ubuntu_server
